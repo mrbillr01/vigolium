@@ -133,3 +133,5 @@ build/public-install.sh
 /archon/codeql-artifacts/
 /archon/codeql-queries/
 /archon/semgrep-res/
+
+internal/resources/deparos/jsscan/
