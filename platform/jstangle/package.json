@@ -91,7 +91,8 @@
     "@babel/traverse": "7.29.7",
     "@babel/parser": "7.29.7",
     "@babel/generator": "7.29.7",
-    "@babel/helper-validator-identifier": "7.29.7"
+    "@babel/helper-validator-identifier": "7.29.7",
+    "browserslist": "4.29.1"
   },
   "trustedDependencies": []
 }
