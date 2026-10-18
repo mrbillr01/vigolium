@@ -247,7 +247,7 @@ services:
 
   postgresdb:
     container_name: postgresdb
-    image: 'postgres:14'
+    image: 'postgres:18.6'
     command: ["postgres", "-c", "max_connections=500"]
     environment:
       POSTGRES_USER: admin
@@ -261,7 +261,7 @@ services:
       timeout: 15s
       retries: 15
     volumes:
-      - postgresql-data:/var/lib/postgresql/data/
+      - postgresql-data:/var/lib/postgresql/
     deploy:
       resources:
         limits:
@@ -270,7 +270,7 @@ services:
 
   mongodb:
     container_name: mongodb
-    image: 'mongo:4.4'
+    image: 'mongo:9.0.4'
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: crapisecretpassword

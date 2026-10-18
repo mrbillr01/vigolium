@@ -88,7 +88,7 @@ func (r *Repository) ListClientRoutes(ctx context.Context, scanUUID, projectUUID
 	// hostname/scheme/port exist only on http_records, so the shared
 	// unqualified filter binds to the joined record.
 	q = applyHostScopeFilter(q, hosts)
-	if err := q.OrderExpr("aa.id ASC").Limit(clientRouteArtifactCap).Scan(ctx, &rows); err != nil {
+	if err := q.OrderExpr("aa.id ASC").Limit(int64(clientRouteArtifactCap)).Scan(ctx, &rows); err != nil {
 		return nil, err
 	}
 

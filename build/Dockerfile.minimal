@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.27-bookworm AS builder
+FROM golang:1.27.2-bookworm AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
@@ -48,7 +48,7 @@ RUN set -e; \
     && cp bin/vigolium /out/vigolium
 
 # Runtime stage
-FROM alpine:3.21
+FROM alpine:3.24.2
 
 RUN apk add --no-cache ca-certificates tzdata
 

@@ -154,7 +154,7 @@ func priorEndpointTable(ctx context.Context, repo *database.Repository, projectU
 		Where("project_uuid = ?", projectUUID).
 		GroupExpr("method, path").
 		OrderExpr("n DESC").
-		Limit(priorContextEndpointCap).
+		Limit(int64(priorContextEndpointCap)).
 		Scan(ctx, &rows)
 	if err != nil || len(rows) == 0 {
 		return ""
@@ -206,7 +206,7 @@ func priorFindingList(ctx context.Context, repo *database.Repository, projectUUI
 		// Highest-severity first, matching the header's formatSeverityCounts order
 		// (suspect ranks above info, per the shared severityOrder).
 		OrderExpr("CASE LOWER(severity) WHEN 'critical' THEN 0 WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 WHEN 'suspect' THEN 4 WHEN 'info' THEN 5 ELSE 6 END").
-		Limit(priorContextFindingCap).
+		Limit(int64(priorContextFindingCap)).
 		Scan(ctx, &rows)
 	if err != nil || len(rows) == 0 {
 		return ""

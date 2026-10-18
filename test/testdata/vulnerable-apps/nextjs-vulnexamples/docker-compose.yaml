@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:18.6-alpine3.24
     environment:
       - POSTGRES_DB=security_vulnerability_examples
       - POSTGRES_USER=security_vulnerability_examples

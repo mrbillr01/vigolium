@@ -267,7 +267,7 @@ func TestRecordWriter_DirectRepoComparison(t *testing.T) {
 		t.Fatalf("Count query failed: %v", err)
 	}
 	expectedMin := total // at least the RecordWriter records should be there
-	if count < expectedMin {
+	if count < int64(expectedMin) {
 		t.Errorf("Expected at least %d records, got %d", expectedMin, count)
 	}
 	t.Logf("Total records in DB: %d", count)

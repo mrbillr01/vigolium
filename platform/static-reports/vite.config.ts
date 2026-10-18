@@ -1,7 +1,7 @@
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { viteSingleFile } from "vite-plugin-singlefile";
+import { singleFilePlugin } from "./scripts/single-file-plugin";
 import { rename } from "fs/promises";
 import { resolve } from "path";
 
@@ -28,7 +28,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    viteSingleFile(),
+    singleFilePlugin(),
     renameOutput(
       resolve(__dirname, "dist/index.html"),
       resolve(__dirname, "dist/template.html"),

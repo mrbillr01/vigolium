@@ -54,6 +54,8 @@ export function spawnAndStream<T = never>(opts: SpawnAndStreamOptions): CliStrea
     cwd: opts.cwd,
     stdio: ["pipe", "pipe", "pipe"],
     env: process.env,
+    // Kill the whole POSIX process group, including descendants holding pipes open.
+    detached: process.platform !== "win32",
   });
 
   // Termination plumbing shared with the `finally` in the generator. `abort`
@@ -65,15 +67,23 @@ export function spawnAndStream<T = never>(opts: SpawnAndStreamOptions): CliStrea
   const abortSignal = opts.abortSignal;
   let childExited = false;
   let killTimer: ReturnType<typeof setTimeout> | undefined;
+  const terminate = (signal: NodeJS.Signals): void => {
+    if (childExited) return;
+    if (process.platform !== "win32" && child.pid) {
+      try { process.kill(-child.pid, signal); } catch { child.kill(signal); }
+    } else {
+      child.kill(signal);
+    }
+  };
   const armHardKill = (): void => {
     if (killTimer) return;
     killTimer = setTimeout(() => {
-      if (!child.killed) child.kill("SIGKILL");
+      terminate("SIGKILL");
     }, 5000);
     killTimer.unref?.();
   };
   const abort = (): void => {
-    if (!child.killed) child.kill("SIGTERM");
+    terminate("SIGTERM");
     armHardKill();
   };
   if (abortSignal) {
@@ -192,7 +202,7 @@ export function spawnAndStream<T = never>(opts: SpawnAndStreamOptions): CliStrea
       } else if (!child.killed) {
         // Left before the child exited (early break by the consumer, or a
         // throw): terminate it instead of orphaning the process.
-        child.kill("SIGTERM");
+        terminate("SIGTERM");
         armHardKill();
       }
       // else: a kill is already in flight (abort path) — leave the SIGKILL

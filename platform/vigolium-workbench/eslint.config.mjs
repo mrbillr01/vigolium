@@ -1,16 +1,6 @@
-// Two dependency ceilings are load-bearing here and are not free to bump:
-//
-//   typescript pinned to 6.x — typescript-eslint refuses to load against TS 7
-//     ("typescript-eslint does not support TS 7.0"), and eslint-config-next
-//     requires it, so TS 7 takes the whole lint run down, not just the TS rules.
-//     See typescript-eslint#10940.
-//   eslint pinned to 9.x — eslint-config-next's peer range is a loose >=9.0.0,
-//     but its transitive eslint-plugin-react (7.37.5, latest) caps at ^9.7 and
-//     calls context.getFilename(), removed in ESLint 10.
-//
-// Raising either one re-breaks `bun run lint` outright. Re-check both upstreams
-// before bumping. Last re-verified 2026-09-20 against typescript 7.0.2 and
-// eslint 10.11.0 (with typescript-eslint 8.70.0): both still fail as described.
+// TypeScript 7 supplies the compiler through @typescript/native. The typescript
+// alias provides Microsoft's TypeScript 6 API compatibility package for ESLint.
+// See https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
 import { defineConfig, globalIgnores } from 'eslint/config';
 import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTs from 'eslint-config-next/typescript';
@@ -70,6 +60,7 @@ const eslintConfig = defineConfig([
     'dist/**',
     'out/**',
     'build/**',
+    'vendor/**',
     'playwright-report/**',
     'test-results/**',
     'next-env.d.ts',

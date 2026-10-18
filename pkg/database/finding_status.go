@@ -279,7 +279,7 @@ func resolveFindingSelectors(ctx context.Context, idb bun.IDB, projectUUID strin
 			Column("id", "project_uuid", "finding_hash", "status").
 			Where("finding_hash >= ? AND finding_hash < ?", prefix, upper).
 			OrderExpr("finding_hash ASC").
-			Limit(maxCandidates + 1)
+			Limit(int64(maxCandidates + 1))
 		if projectUUID != "" {
 			q = q.Where("project_uuid = ?", projectUUID)
 		}

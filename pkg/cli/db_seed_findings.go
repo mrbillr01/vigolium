@@ -919,7 +919,7 @@ func seedFindings(rng *rand.Rand, records []*database.HTTPRecord) []*database.Fi
 			MatchedAt:        []string{"https://admin.example.com:8443/admin/logs?file=../../../proc/self/environ"},
 			ExtractedResults: []string{"DATABASE_URL=postgresql://admin:p0stgr3s_pr0d!@db.internal:5432/shopdb"},
 			Request:          "GET /admin/logs?file=../../../proc/self/environ HTTP/1.1\r\nHost: admin.example.com:8443\r\nAuthorization: Basic YWRtaW46cGFzc3dvcmQ=\r\n\r\n",
-			Response:         "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nDATABASE_URL=postgresql://admin:p0stgr3s_pr0d!@db.internal:5432/shopdb\x00JWT_SECRET=sup3r-s3cret-k3y\x00PATH=/usr/local/bin:/usr/bin",
+			Response:         "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nDATABASE_URL=postgresql://admin:p0stgr3s_pr0d!@db.internal:5432/shopdb\\x00JWT_SECRET=sup3r-s3cret-k3y\\x00PATH=/usr/local/bin:/usr/bin",
 			FindingHash:      hashStr([]byte("lfi-fixed-admin.example.com-/admin/logs-environ")),
 			FoundAt:          now.Add(-6 * time.Hour),
 			CreatedAt:        now.Add(-6 * time.Hour),

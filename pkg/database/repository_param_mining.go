@@ -51,7 +51,7 @@ func (r *Repository) ParamMiningCandidates(ctx context.Context, scanUUID string,
 	q = applyHostScopeFilter(q, hosts)
 	q = applyProjectFilter(q, scan.ProjectUUID)
 	if limit > 0 {
-		q = q.Limit(limit)
+		q = q.Limit(int64(limit))
 	}
 	if err := q.OrderExpr("risk_score DESC, surface_score DESC, created_at ASC, uuid ASC").Scan(ctx); err != nil {
 		return nil, err
@@ -84,7 +84,7 @@ func (r *Repository) ParamNamesForHost(ctx context.Context, projectUUID, hostnam
 		Where("hostname = ?", hostname).
 		Where("parameters IS NOT NULL")
 	q = applyProjectFilter(q, projectUUID)
-	if err := q.Limit(hostParamNamesRowCap).Scan(ctx); err != nil {
+	if err := q.Limit(int64(hostParamNamesRowCap)).Scan(ctx); err != nil {
 		return HostParamNames{}, err
 	}
 	for _, row := range rows {
@@ -112,7 +112,7 @@ func (r *Repository) ParamNamesForHost(ctx context.Context, projectUUID, hostnam
 	if projectUUID != "" {
 		aq = aq.Where("aa.project_uuid = ?", projectUUID)
 	}
-	if err := aq.Limit(hostParamNamesRowCap).Scan(ctx); err != nil {
+	if err := aq.Limit(int64(hostParamNamesRowCap)).Scan(ctx); err != nil {
 		return HostParamNames{}, err
 	}
 	for _, a := range artifacts {

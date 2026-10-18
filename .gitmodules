@@ -1,0 +1,15 @@
+[submodule "third_party/utils"]
+	path = third_party/utils
+	url = https://github.com/mrbillr01/vigolium-utils.git
+[submodule "third_party/tlsx"]
+	path = third_party/tlsx
+	url = https://github.com/mrbillr01/vigolium-tlsx.git
+[submodule "third_party/rod"]
+	path = third_party/rod
+	url = https://github.com/mrbillr01/vigolium-rod.git
+[submodule "third_party/goimpacket"]
+	path = third_party/goimpacket
+	url = https://github.com/mrbillr01/vigolium-goimpacket.git
+[submodule "third_party/zgrab2"]
+	path = third_party/zgrab2
+	url = https://github.com/mrbillr01/vigolium-zgrab2.git

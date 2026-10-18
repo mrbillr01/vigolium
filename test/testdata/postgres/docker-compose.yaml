@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18.6-alpine3.24
     container_name: vigolium-postgres-test
     environment:
       POSTGRES_USER: vigolium_test
@@ -14,4 +14,4 @@ services:
       timeout: 5s
       retries: 10
     tmpfs:
-      - /var/lib/postgresql/data
+      - /var/lib/postgresql

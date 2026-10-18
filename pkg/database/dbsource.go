@@ -324,7 +324,7 @@ func (s *DBInputSource) fetchNextBatch(ctx context.Context) ([]*HTTPRecord, erro
 	if limit <= 0 {
 		limit = 128
 	}
-	if err := q.OrderExpr("created_at ASC, uuid ASC").Limit(limit).Scan(ctx); err != nil {
+	if err := q.OrderExpr("created_at ASC, uuid ASC").Limit(int64(limit)).Scan(ctx); err != nil {
 		return nil, err
 	}
 	if len(records) == 0 {
@@ -835,7 +835,7 @@ func (s *RiskPrioritizedDBInputSource) nextPageRowsLocked(ctx context.Context) (
 			s.keyScore, s.keyScore, at, at, s.keyID)
 	}
 	q = applyHostScopeFilter(q, s.hostScopes)
-	q = q.OrderExpr("risk_score DESC, created_at ASC, uuid ASC").Limit(riskPrefetchBatchSize)
+	q = q.OrderExpr("risk_score DESC, created_at ASC, uuid ASC").Limit(int64(riskPrefetchBatchSize))
 
 	var rows []riskPageRow
 	if err := q.Scan(ctx, &rows); err != nil {

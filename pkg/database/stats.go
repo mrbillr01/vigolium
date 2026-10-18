@@ -383,7 +383,7 @@ func (db *DB) GetTopHosts(ctx context.Context, filters QueryFilters, limit int) 
 		ColumnExpr("COUNT(*) AS request_count").
 		Group("scheme", "hostname", "port").
 		OrderExpr("request_count DESC").
-		Limit(limit).
+		Limit(int64(limit)).
 		Scan(ctx, &rows)
 	if err != nil {
 		return nil, err
@@ -454,7 +454,7 @@ func (db *DB) scopedFindingsQuery(filters QueryFilters) *bun.SelectQuery {
 	return query
 }
 
-func (db *DB) countScopedFindings(ctx context.Context, filters QueryFilters) (int, error) {
+func (db *DB) countScopedFindings(ctx context.Context, filters QueryFilters) (int64, error) {
 	return db.scopedFindingsQuery(filters).
 		ColumnExpr("DISTINCT f.id").
 		Count(ctx)

@@ -792,8 +792,8 @@ update-jstangle:
 # do not need to spend time producing four binaries that cannot run locally.
 build-jstangle-current:
 	@set -e; \
-	os=$$(uname -s | tr '[:upper:]' '[:lower:]'); \
-	arch=$$(uname -m); \
+	os="$(AUDIT_HOST_GOOS)"; \
+	arch="$(AUDIT_HOST_GOARCH)"; \
 	case "$$arch" in x86_64|amd64) arch=amd64 ;; arm64|aarch64) arch=arm64 ;; esac; \
 	name="jstangle-$$os-$$arch"; \
 	cd platform/jstangle; \
@@ -856,10 +856,12 @@ pack-jstangle:
 # runs this so a checkout whose raw helper predates compression (or a CI
 # cache that restored only the raw blob) still has the .zst go:embed needs.
 pack-jstangle-host:
-	@os=$$(uname -s | tr '[:upper:]' '[:lower:]'); \
-	arch=$$(uname -m); \
+	@os="$(AUDIT_HOST_GOOS)"; \
+	arch="$(AUDIT_HOST_GOARCH)"; \
 	case "$$arch" in x86_64|amd64) arch=amd64 ;; arm64|aarch64) arch=arm64 ;; esac; \
-	if [ -f "$(JSTANGLE_RES_DST_DIR)/jstangle-$$os-$$arch" ]; then \
+	name="jstangle-$$os-$$arch"; \
+	case "$$os" in windows) name="$$name.exe" ;; esac; \
+	if [ -f "$(JSTANGLE_RES_DST_DIR)/$$name" ]; then \
 		$(MAKE) --no-print-directory pack-jstangle JSTANGLE_TARGET=$$os-$$arch; \
 	fi
 
@@ -868,10 +870,11 @@ pack-jstangle-host:
 # the same flags must still invalidate the helper.
 ensure-jstangle:
 	@set -e; \
-	os=$$(uname -s | tr '[:upper:]' '[:lower:]'); \
-	arch=$$(uname -m); \
+	os="$(AUDIT_HOST_GOOS)"; \
+	arch="$(AUDIT_HOST_GOARCH)"; \
 	case "$$arch" in x86_64|amd64) arch=amd64 ;; arm64|aarch64) arch=arm64 ;; esac; \
 	host_bin="$(JSTANGLE_RES_DST_DIR)/jstangle-$$os-$$arch"; \
+	case "$$os" in windows) host_bin="$$host_bin.exe" ;; esac; \
 	source_hash=$$(cd platform/jstangle && bun scripts/source-fingerprint.ts); \
 	needs_build=0; \
 	if [ ! -x "$$host_bin" ] || [ $$(wc -c < "$$host_bin" 2>/dev/null || echo 0) -lt 1024 ]; then \
@@ -956,8 +959,8 @@ AUDIT_BIN_DST_DIR=pkg/audit/bin/_bin
 # $(AUDIT_BIN_HOST).zst and $(AUDIT_BIN_HOST).pin (never the raw executable,
 # which `go:embed all:_bin` would embed uncompressed).
 AUDIT_BIN_HOST=$(AUDIT_BIN_DST_DIR)/vigolium-audit
-AUDIT_HOST_GOOS=$(shell uname -s | tr '[:upper:]' '[:lower:]')
-AUDIT_HOST_GOARCH=$(shell uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
+AUDIT_HOST_GOOS=$(shell go env GOHOSTOS)
+AUDIT_HOST_GOARCH=$(shell go env GOHOSTARCH)
 
 # Upstream vigolium-audit checkout, expected as a sibling of the vigolium repo.
 # Override on the command line, e.g. `make sync-audit AUDIT_UPSTREAM=...`.
@@ -1009,7 +1012,7 @@ update-audit:
 	for target in $(AUDIT_BIN_TARGETS); do \
 		bin="$(AUDIT_DIST_DIR)/vigolium-audit-$$target"; \
 		case "$$target" in windows-*) bin="$$bin.exe" ;; esac; \
-		if [ ! -x "$$bin" ]; then \
+		if [ ! -s "$$bin" ]; then \
 			echo "\033[31m[!] vigolium-audit binary not produced at $$bin\033[0m"; \
 			exit 1; \
 		fi; \
@@ -1054,7 +1057,7 @@ ensure-audit-dist:
 	for target in $(AUDIT_BIN_TARGETS); do \
 		bin="$(AUDIT_DIST_DIR)/vigolium-audit-$$target"; \
 		case "$$target" in windows-*) bin="$$bin.exe" ;; esac; \
-		if [ ! -x "$$bin" ]; then missing=1; fi; \
+		if [ ! -s "$$bin" ]; then missing=1; fi; \
 	done; \
 	if [ "$$missing" = "1" ]; then \
 		echo "$(PREFIX) vigolium-audit cross-compile blobs missing, building all targets..."; \

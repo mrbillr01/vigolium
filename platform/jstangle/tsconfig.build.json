@@ -11,8 +11,15 @@
     "declarationMap": true,
     "emitDeclarationOnly": true,
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "types": [
+      "node"
+    ]
   },
-  "include": ["src"],
-  "exclude": ["**/test"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "**/test"
+  ]
 }
