@@ -135,3 +135,6 @@ build/public-install.sh
 /archon/semgrep-res/
 
 internal/resources/deparos/jsscan/
+
+# Installed Bun compiler downloads remain local
+**/.bun-cache/
